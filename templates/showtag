@@ -1,14 +1,9 @@
-<html>
-<head>
-<title>Tag {{ .Name }}</title>
-</head>
-<body>
-<h1>Tag {{ .Name }}</h1>
-<ul>
-{{ define "Name" }}{{ .Name }}{{ end }}
-{{ range .Issues }}
-<li>Issue {{ .Id }}: <a href="/issue/{{ .Id }}">{{ .Title }}</a> - <a href="{{ .Status }}">{{ .Status }}</a></li>
-{{ end }} 
-</ul>
-</body>
-</html>
+{{ template "header" .Name }}
+      <div class="starter-template">
+        <h1>Tag {{ .Name }}</h1>
+        <ul>
+        {{ range .Issues }}
+          <li>Issue {{ .Id }}: <a href="/issue/{{ .Id }}">{{ .Title }}</a> - <a href="{{ .Status }}">{{ .Status }}</a></li>
+        {{ end }} 
+      </div>
+{{ template "footer" }}
