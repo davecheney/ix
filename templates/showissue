@@ -1,0 +1,17 @@
+<html>
+<head>
+<title>Issue {{ .Id }}: {{ .Title }}</title>
+</head>
+<body>
+<h1>Issue {{ .Id }}: {{ .Title }}</h1>
+<h3>Status: {{ .Status }}</h3>
+<h3>Labels</h3>
+<ul>
+{{ range .Label }}
+<li><a href="/tag/{{ . }}">{{ . }}</a></li>
+{{ end }}
+</ul>
+<h3>Content</h3>
+<pre>{{.Content}}</pre>
+</body>
+</html>
