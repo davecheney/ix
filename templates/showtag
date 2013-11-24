@@ -5,9 +5,10 @@
 <body>
 <h1>Tag {{ .Name }}</h1>
 <ul>
+{{ define "Name" }}{{ .Name }}{{ end }}
 {{ range .Issues }}
-<li>Issue {{ .Id }}: <a href="/issue/{{ .Id }}">{{ .Title }}</a> - {{ .Status }}</li>
-{{ end }}
+<li>Issue {{ .Id }}: <a href="/issue/{{ .Id }}">{{ .Title }}</a> - <a href="{{ .Status }}">{{ .Status }}</a></li>
+{{ end }} 
 </ul>
 </body>
 </html>

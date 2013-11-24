@@ -7,8 +7,8 @@ import (
 	"path"
 	"path/filepath"
 	"strconv"
-	"time"
 	"sync"
+	"time"
 
 	"github.com/kr/fs"
 )
@@ -94,14 +94,15 @@ func (m *Model) LoadIssues(dir string) {
 					Content:   e.Content,
 					Status:    e.Status,
 					Label:     e.Label,
-				})		
+				})
 			m.Unlock()
 		}
 	}
 }
 
 func (m *Model) FindIssueById(id int) (*Issue, bool) {
-	m.Lock(); defer m.Unlock()
+	m.Lock()
+	defer m.Unlock()
 	for _, i := range m.issues {
 		if i.Id == id {
 			return i, true
@@ -111,7 +112,8 @@ func (m *Model) FindIssueById(id int) (*Issue, bool) {
 }
 
 func (m *Model) FindIssuesByTag(name string) []*Issue {
-	m.Lock(); defer m.Unlock()
+	m.Lock()
+	defer m.Unlock()
 	var issues []*Issue
 	for _, i := range m.issues {
 		for _, l := range i.Label {
@@ -125,11 +127,17 @@ func (m *Model) FindIssuesByTag(name string) []*Issue {
 }
 
 func (m *Model) FindIssuesByTagAndStatus(name, status string) []*Issue {
-        var issues []*Issue
-        for _, i := range m.FindIssueByTag(name) {
+	var issues []*Issue
+	for _, i := range m.FindIssuesByTag(name) {
 		if i.Status == status {
-                               issues = append(issues, i)
-                }
-        }
-        return issues
+			issues = append(issues, i)
+		}
+	}
+	return issues
 }
+
+type ById []*Issue
+
+func (x ById) Len() int           { return len(x) }
+func (x ById) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+func (x ById) Less(i, j int) bool { return x[i].Id < x[j].Id }
