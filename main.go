@@ -73,7 +73,7 @@ func ShowTagAndStatus(params martini.Params) (int, string) {
 
 func main() {
 	LoadTemplates()
-	model.LoadIssues("issues")
+	go model.LoadIssues("issues")
 
 	m := martini.Classic()
 	m.Get("/issue/:id", ShowIssue)

@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"time"
+	"sync"
 
 	"github.com/kr/fs"
 )
@@ -70,6 +71,7 @@ type Issue struct {
 }
 
 type Model struct {
+	sync.Mutex
 	issues []*Issue
 }
 
@@ -83,6 +85,7 @@ func (m *Model) LoadIssues(dir string) {
 		for _, e := range ParseFile(filepath.Join(dir, st.Name())) {
 			id, err := strconv.Atoi(path.Base(e.Id))
 			fatal(err)
+			m.Lock()
 			m.issues = append(m.issues,
 				&Issue{
 					Id:        id,
@@ -91,12 +94,14 @@ func (m *Model) LoadIssues(dir string) {
 					Content:   e.Content,
 					Status:    e.Status,
 					Label:     e.Label,
-				})
+				})		
+			m.Unlock()
 		}
 	}
 }
 
 func (m *Model) FindIssueById(id int) (*Issue, bool) {
+	m.Lock(); defer m.Unlock()
 	for _, i := range m.issues {
 		if i.Id == id {
 			return i, true
@@ -106,6 +111,7 @@ func (m *Model) FindIssueById(id int) (*Issue, bool) {
 }
 
 func (m *Model) FindIssuesByTag(name string) []*Issue {
+	m.Lock(); defer m.Unlock()
 	var issues []*Issue
 	for _, i := range m.issues {
 		for _, l := range i.Label {
@@ -127,6 +133,3 @@ func (m *Model) FindIssuesByTagAndStatus(name, status string) []*Issue {
         }
         return issues
 }
-
-
-
