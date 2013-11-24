@@ -119,14 +119,17 @@ func (m *Model) FindIssuesByTag(name string) []*Issue {
 }
 
 func (m *Model) FindIssuesByTagAndStatus(name, status string) []*Issue {
-        var issues []*Issue
-        for _, i := range m.FindIssueByTag(name) {
+	var issues []*Issue
+	for _, i := range m.FindIssuesByTag(name) {
 		if i.Status == status {
-                               issues = append(issues, i)
-                }
-        }
-        return issues
+			issues = append(issues, i)
+		}
+	}
+	return issues
 }
 
+type ById []*Issue
 
-
+func (x ById) Len() int           { return len(x) }
+func (x ById) Swap(i, j int)      { x[i], x[j] = x[j], x[i] }
+func (x ById) Less(i, j int) bool { return x[i].Id < x[j].Id }

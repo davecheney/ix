@@ -59,16 +59,22 @@ func ShowTag(params martini.Params) (int, string) {
 	if len(issues) == 0 {
 		return 404, fmt.Sprintf("Tag %q not found", name)
 	}
-	return View("showtag", struct{Name string; Issues []*Issue}{name, issues})
+	return View("showtag", struct {
+		Name   string
+		Issues []*Issue
+	}{name, ById(issues)})
 }
 
 func ShowTagAndStatus(params martini.Params) (int, string) {
 	name, status := params["name"], params["status"]
-	issues := model.FindIssuesByTagAndStatus(name)
+	issues := model.FindIssuesByTagAndStatus(name, status)
 	if len(issues) == 0 {
 		return 404, fmt.Sprintf("Tag/Status %q/%q not found", name)
 	}
-	return View("showtagandstatus", struct{Name string; Issues []*Issue}{name, issues})
+	return View("showtag", struct {
+		Name   string
+		Issues []*Issue
+	}{name, ById(issues)})
 }
 
 func main() {
