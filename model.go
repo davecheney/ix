@@ -136,6 +136,22 @@ func (m *Model) FindIssuesByTagAndStatus(name, status string) []*Issue {
 	return issues
 }
 
+func (m *Model) FindTags() []string {
+	m.Lock()
+	defer m.Unlock()
+	var tags []string
+	found := make(map[string]bool)
+	for _, i := range m.issues {
+		for _, tag := range i.Label {
+			if !found[tag] {
+				tags = append(tags, tag)
+				found[tag] = true
+			}
+		}
+	}
+	return tags
+}
+
 type ById []*Issue
 
 func (x ById) Len() int           { return len(x) }

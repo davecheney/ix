@@ -77,6 +77,11 @@ func ShowTagAndStatus(params martini.Params) (int, string) {
 	}{name, ById(issues)})
 }
 
+func Overview() (int, string) {
+	tags := model.FindTags()
+	return View("overview", struct{ Tags []string }{tags})
+}
+
 func main() {
 	LoadTemplates()
 	go model.LoadIssues("issues")
@@ -85,5 +90,6 @@ func main() {
 	m.Get("/issue/:id", ShowIssue)
 	m.Get("/tag/:name", ShowTag)
 	m.Get("/tag/:name/:status", ShowTagAndStatus)
+	m.Get("/", Overview)
 	m.Run()
 }
