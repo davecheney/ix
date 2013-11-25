@@ -1,0 +1,7 @@
+{{ template "header" "Tags" }}
+      <div class="starter-template">
+        {{ range . }}
+          <li><a href="/tag/{{ . }}">{{ . }}</a></li>
+        {{ end }} 
+      </div>
+{{ template "footer" }}

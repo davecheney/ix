@@ -65,6 +65,18 @@ func ShowTag(params martini.Params) (int, string) {
 	}{name, ById(issues)})
 }
 
+func ShowStatus(params martini.Params) (int, string) {
+	status := params["status"]
+	issues := model.FindIssuesByStatus(status)
+	if len(issues) == 0 {
+		return 404, fmt.Sprintf("Status %q not found", status)
+	}
+	return View("showstatus", struct {
+		Status  string
+		Issues []*Issue
+	}{status, ById(issues)})
+}
+
 func ShowTagAndStatus(params martini.Params) (int, string) {
 	name, status := params["name"], params["status"]
 	issues := model.FindIssuesByTagAndStatus(name, status)
@@ -75,6 +87,11 @@ func ShowTagAndStatus(params martini.Params) (int, string) {
 		Name   string
 		Issues []*Issue
 	}{name, ById(issues)})
+}
+
+func ShowAllTags() (int,string) {
+	tags := model.FindTags()
+	return View("showtags", tags)
 }
 
 func Overview() (int, string) {
@@ -89,7 +106,9 @@ func main() {
 	m := martini.Classic()
 	m.Get("/issue/:id", ShowIssue)
 	m.Get("/tag/:name", ShowTag)
+	m.Get("/tag", ShowAllTags)
 	m.Get("/tag/:name/:status", ShowTagAndStatus)
+	m.Get("/status/:status", ShowStatus)
 	m.Get("/", Overview)
 	m.Run()
 }

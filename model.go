@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/xml"
+	"html/template"
 	"log"
 	"os"
 	"path"
@@ -65,7 +66,7 @@ type Issue struct {
 	Id        int
 	Title     string
 	Published time.Time
-	Content   string
+	Content   template.HTML
 	Status    string
 	Label     []string
 }
@@ -91,7 +92,7 @@ func (m *Model) LoadIssues(dir string) {
 					Id:        id,
 					Title:     e.Title,
 					Published: e.Published,
-					Content:   e.Content,
+					Content:   template.HTML(e.Content),
 					Status:    e.Status,
 					Label:     e.Label,
 				})
@@ -126,6 +127,18 @@ func (m *Model) FindIssuesByTag(name string) []*Issue {
 	return issues
 }
 
+func (m *Model) FindIssuesByStatus(status string) []*Issue {
+	m.Lock()
+	defer m.Unlock()
+	var issues []*Issue
+	for _, i := range m.issues {
+		if i.Status == status {
+			issues = append(issues, i)
+		}
+	}
+	return issues
+}
+
 func (m *Model) FindIssuesByTagAndStatus(name, status string) []*Issue {
 	var issues []*Issue
 	for _, i := range m.FindIssuesByTag(name) {
@@ -150,6 +163,20 @@ func (m *Model) FindTags() []string {
 		}
 	}
 	return tags
+}
+
+func (m *Model) FindStatus() []string {
+	m.Lock()
+	defer m.Unlock()
+	var statuses []string
+	found := make(map[string]bool)
+	for _, i := range m.issues {
+		if !found[i.Status] {
+			statuses = append(statuses, i.Status)
+			found[i.Status] = true
+		}
+	}
+	return statuses
 }
 
 type ById []*Issue

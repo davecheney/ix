@@ -1,0 +1,9 @@
+{{ template "header" .Status }}
+      <div class="starter-template">
+        <h1>Status {{ .Status }}</h1>
+        <ul>
+        {{ range .Issues }}
+          <li>Issue {{ .Id }}: <a href="/issue/{{ .Id }}">{{ .Title }}</a></li>
+        {{ end }} 
+      </div>
+{{ template "footer" }}
