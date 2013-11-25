@@ -1,14 +1,10 @@
 {{ template "header" .Title }}
   <div class="starter-template">
-    <h1>Issue {{ .Id }}: {{ .Title }}</h1>
-    <h3>Status: {{ .Status }}</h3>
-    <h3>Labels</h3>
-    <ul>
-    {{ range .Label }}
-      <li><a href="/tag/{{ . }}">{{ . }}</a></li>
-    {{ end }}
-    </ul>
-    <h3>Content</h3>
+<div class="page-header">
+    <h1>Issue {{ .Id }}: {{ .Title }} <span class="label label-default">{{ .Status }}</span></h1>
+</div>
+    <h3>Labels{{ range .Label }} <span class="label label-info"><a href="/tag/{{ . }}">{{ . }}</a></span>{{ end }}
+    <h3>Description</h3>
     <pre>{{.Content}}</pre>
   </div>
 {{ template "footer" }}
