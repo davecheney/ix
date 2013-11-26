@@ -3,7 +3,7 @@
     <h1>Tags <small></small></h1>
   </div>
   <div class="list-group">
-  {{ range . }}
+  {{ range .Tags }}
     <a class="list-group-item" href="/tag/{{ . }}">{{ . }}</a>
   {{ end }} 
   </div>

@@ -101,6 +101,27 @@ func (m *Model) LoadIssues(dir string) {
 	}
 }
 
+func (m *Model) LoadComments(dir string) {
+	w := fs.Walk(dir)
+	for w.Step() {
+		st := w.Stat()
+		if st.IsDir() {
+			continue
+		}
+		for _, e := range ParseFile(filepath.Join(dir, st.Name())) {
+			comment, err := strconv.Atoi(path.Base(e.Id))
+			fatal(err)
+			id, err := strconv.Atoi(path.Base(path.Join(e.Id, "../../..")))
+			fatal(err)
+			m.Lock()
+			issue := m.issues[id]
+			m.Unlock()
+
+			log.Println(issue, comment)
+		}
+	}
+}
+
 func (m *Model) FindIssueById(id int) (*Issue, bool) {
 	m.Lock()
 	defer m.Unlock()
