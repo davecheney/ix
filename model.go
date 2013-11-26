@@ -210,7 +210,7 @@ func (m *Model) FindComments(name string) []*Entry {
 	defer m.Unlock()
 	var entries []*Entry
 	for _, i := range m.issues {
-		for j := range i.Comments {	
+		for j := range i.Comments {
 			if i.Comments[j].Author.Name == name {
 				entries = append(entries, &i.Comments[j])
 			}

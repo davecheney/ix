@@ -81,7 +81,10 @@ func ShowAllStatuses(r render.Render) {
 
 func ShowComments(r render.Render, params martini.Params) {
 	comments := model.FindComments(params["name"])
-	r.HTML(200, "showcomments", struct{ Name string; Comments []*Entry}{Name: params["name"], Comments: comments})
+	r.HTML(200, "showcomments", struct {
+		Name     string
+		Comments []*Entry
+	}{Name: params["name"], Comments: comments})
 }
 
 func Overview(r render.Render) {
