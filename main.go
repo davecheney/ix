@@ -9,7 +9,7 @@ import (
 	"github.com/codegangsta/martini-contrib/render"
 )
 
-var model = new(Model)
+var model = &Model{issues: make(map[int]*Issue)}
 
 func atoi(s string) int {
 	i, err := strconv.Atoi(s)

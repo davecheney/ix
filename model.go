@@ -72,9 +72,14 @@ type Issue struct {
 	Comments  []Entry
 }
 
+type Comment struct {
+	Published time.Time
+	Content   template.HTML
+}
+
 type Model struct {
 	sync.Mutex
-	issues []*Issue
+	issues map[int]*Issue
 }
 
 func (m *Model) LoadIssues(dir string) {
@@ -88,15 +93,14 @@ func (m *Model) LoadIssues(dir string) {
 			id, err := strconv.Atoi(path.Base(e.Id))
 			fatal(err)
 			m.Lock()
-			m.issues = append(m.issues,
-				&Issue{
-					Id:        id,
-					Title:     e.Title,
-					Published: e.Published,
-					Content:   template.HTML(e.Content),
-					Status:    e.Status,
-					Label:     e.Label,
-				})
+			m.issues[id] = &Issue{
+				Id:        id,
+				Title:     e.Title,
+				Published: e.Published,
+				Content:   template.HTML(e.Content),
+				Status:    e.Status,
+				Label:     e.Label,
+			}
 			m.Unlock()
 		}
 	}
@@ -115,12 +119,9 @@ func (m *Model) LoadComments(dir string) {
 			id, err := strconv.Atoi(path.Base(path.Join(e.Id, "../../..")))
 			fatal(err)
 			m.Lock()
-			if id < 0 || id >= len(m.issues) {
-				m.Unlock()
-				continue
+			if issue, ok := m.issues[id]; ok {
+				issue.Comments = append(issue.Comments, e)
 			}
-			issue := m.issues[id]
-			issue.Comments = append(issue.Comments, e.Comments...)
 			m.Unlock()
 		}
 	}
