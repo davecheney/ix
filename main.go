@@ -79,6 +79,11 @@ func ShowAllStatuses(r render.Render) {
 	r.HTML(200, "showstatuses", struct{ Statuses []string }{statuses})
 }
 
+func ShowComments(r render.Render, params martini.Params) {
+	comments := model.FindComments(params["name"])
+	r.HTML(200, "showcomments", struct{ Name string; Comments []*Entry}{Name: params["name"], Comments: comments})
+}
+
 func Overview(r render.Render) {
 	tags := model.FindTags()
 	r.HTML(200, "overview", struct{ Tags []string }{tags})
@@ -101,6 +106,7 @@ func main() {
 	m.Get("/tag/:name/:status", ShowTagAndStatus)
 	m.Get("/status/:status", ShowStatus)
 	m.Get("/status", ShowAllStatuses)
+	m.Get("/comments/:name", ShowComments)
 	m.Get("/", Overview)
 	m.Run()
 }

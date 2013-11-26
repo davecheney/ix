@@ -1,0 +1,9 @@
+{{ template "header" "Comments by {{ .Name }}" }}
+      <div class="starter-template">
+        <h1>Comments by {{ .Name }}</h1>
+        <ul>
+        {{ range .Comments }}
+        {{ template "comment" . }}
+        {{ end }} 
+      </div>
+{{ template "footer" }}

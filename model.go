@@ -205,6 +205,20 @@ func (m *Model) FindStatuses() []string {
 	return statuses
 }
 
+func (m *Model) FindComments(name string) []*Entry {
+	m.Lock()
+	defer m.Unlock()
+	var entries []*Entry
+	for _, i := range m.issues {
+		for j := range i.Comments {	
+			if i.Comments[j].Author.Name == name {
+				entries = append(entries, &i.Comments[j])
+			}
+		}
+	}
+	return entries
+}
+
 type ById []*Issue
 
 func (x ById) Len() int           { return len(x) }

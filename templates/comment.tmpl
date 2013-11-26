@@ -1,6 +1,6 @@
 {{ if .Content }}
 <li><div class="comment">
-<p>{{ .Author.Name }}</p>
+<p><a href="/comments/{{ .Author.Name }}">{{ .Author.Name }}</a></p>
 <pre>{{ .Content }}</pre>
 </div></li>
 {{ end }}
