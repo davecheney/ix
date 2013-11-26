@@ -4,7 +4,7 @@
   {{ range $name, $count := .Tags }}
   <li class="list-group-item">
     <span class="badge">{{ $count }}</span>
-    {{ $name }}
+    <a href="/tag/{{ $name }}">{{ $name }}</a>
   </li>
   {{ end }}
 </ul>  
