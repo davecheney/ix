@@ -88,8 +88,11 @@ func ShowComments(r render.Render, params martini.Params) {
 }
 
 func Overview(r render.Render) {
-	tags := model.FindTags()
-	r.HTML(200, "overview", struct{ Tags []string }{tags})
+	tags := make(map[string]int) 
+	for _, tag := range model.FindTags() {
+		tags[tag] = model.CountIssuesByTag(tag)
+	}	
+	r.HTML(200, "overview", struct{ Tags map[string]int }{tags})
 }
 
 func main() {

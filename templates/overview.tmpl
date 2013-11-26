@@ -1,6 +1,11 @@
 {{ template "header" "ix" }}
-      <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-      </div>
+  <h1>Tags</h1>
+<ul class="list-group">
+  {{ range $name, $count := .Tags }}
+  <li class="list-group-item">
+    <span class="badge">{{ $count }}</span>
+    {{ $name }}
+  </li>
+  {{ end }}
+</ul>  
 {{ template "footer" }}

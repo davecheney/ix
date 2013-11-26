@@ -153,6 +153,8 @@ func (m *Model) FindIssuesByTag(name string) []*Issue {
 	return issues
 }
 
+func (m *Model) CountIssuesByTag(name string) int { return len(m.FindIssuesByTag(name)) }
+
 func (m *Model) FindIssuesByStatus(status string) []*Issue {
 	m.Lock()
 	defer m.Unlock()
