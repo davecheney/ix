@@ -69,6 +69,7 @@ type Issue struct {
 	Content   template.HTML
 	Status    string
 	Label     []string
+	Comments  []Entry
 }
 
 type Model struct {
@@ -109,15 +110,18 @@ func (m *Model) LoadComments(dir string) {
 			continue
 		}
 		for _, e := range ParseFile(filepath.Join(dir, st.Name())) {
-			comment, err := strconv.Atoi(path.Base(e.Id))
-			fatal(err)
+			//comment, err := strconv.Atoi(path.Base(e.Id))
+			//fatal(err)
 			id, err := strconv.Atoi(path.Base(path.Join(e.Id, "../../..")))
 			fatal(err)
 			m.Lock()
+			if id < 0 || id >= len(m.issues) {
+				m.Unlock()
+				continue
+			}
 			issue := m.issues[id]
+			issue.Comments = append(issue.Comments, e.Comments...)
 			m.Unlock()
-
-			log.Println(issue, comment)
 		}
 	}
 }
@@ -186,7 +190,7 @@ func (m *Model) FindTags() []string {
 	return tags
 }
 
-func (m *Model) FindStatus() []string {
+func (m *Model) FindStatuses() []string {
 	m.Lock()
 	defer m.Unlock()
 	var statuses []string

@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"sort"
 	"strconv"
 
 	"github.com/codegangsta/martini"
@@ -33,10 +34,11 @@ func ShowTag(r render.Render, params martini.Params) {
 		r.HTML(404, "error/404", name)
 		return
 	}
+	sort.Sort(ById(issues))
 	r.HTML(200, "showtag", struct {
 		Name   string
 		Issues []*Issue
-	}{name, ById(issues)})
+	}{name, issues})
 }
 
 func ShowStatus(r render.Render, params martini.Params) {
@@ -46,10 +48,11 @@ func ShowStatus(r render.Render, params martini.Params) {
 		r.HTML(404, "error/404", status)
 		return
 	}
+	sort.Sort(ById(issues))
 	r.HTML(200, "showstatus", struct {
 		Status string
 		Issues []*Issue
-	}{status, ById(issues)})
+	}{status, issues})
 }
 
 func ShowTagAndStatus(r render.Render, params martini.Params) {
@@ -59,15 +62,21 @@ func ShowTagAndStatus(r render.Render, params martini.Params) {
 		r.HTML(404, "error/404", name)
 		return
 	}
+	sort.Sort(ById(issues))
 	r.HTML(200, "showtag", struct {
 		Name   string
 		Issues []*Issue
-	}{name, ById(issues)})
+	}{name, issues})
 }
 
 func ShowAllTags(r render.Render) {
 	tags := model.FindTags()
 	r.HTML(200, "showtags", struct{ Tags []string }{tags})
+}
+
+func ShowAllStatuses(r render.Render) {
+	statuses := model.FindStatuses()
+	r.HTML(200, "showstatuses", struct{ Statuses []string }{statuses})
 }
 
 func Overview(r render.Render) {
@@ -79,8 +88,8 @@ func main() {
 	go func() {
 		model.LoadIssues("issues")
 		log.Println("issues loaded")
-		//		model.LoadComments("comments")
-		//		log.Println("comments loaded")
+		model.LoadComments("comments")
+		log.Println("comments loaded")
 	}()
 
 	m := martini.Classic()
@@ -91,6 +100,7 @@ func main() {
 	m.Get("/tag", ShowAllTags)
 	m.Get("/tag/:name/:status", ShowTagAndStatus)
 	m.Get("/status/:status", ShowStatus)
+	m.Get("/status", ShowAllStatuses)
 	m.Get("/", Overview)
 	m.Run()
 }
